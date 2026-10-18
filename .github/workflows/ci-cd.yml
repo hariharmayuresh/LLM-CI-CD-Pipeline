@@ -30,7 +30,7 @@ jobs:
           curl -fsSL https://ollama.com/install.sh | sh
           ollama serve &
           sleep 5
-          ollama pull qwen3
+          ollama pull qwen3:latest
 
       - name: Run unit tests
         run: pytest tests/test_unit.py
