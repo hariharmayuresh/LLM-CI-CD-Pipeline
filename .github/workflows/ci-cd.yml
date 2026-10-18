@@ -48,12 +48,30 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
-  
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build Docker image
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker image
         run: |
-          docker build \
-            -t llm-app:${{ github.sha }} .
+          IMAGE_NAME="ghcr.io/${{ github.repository }}:latest"
+          IMAGE_TAG="ghcr.io/${{ github.repository }}:${{ github.sha }}"
+          
+          # Convert to lowercase in case repo name has capital letters
+          IMAGE_NAME=$(echo "$IMAGE_NAME" | tr '[:upper:]' '[:lower:]')
+          IMAGE_TAG=$(echo "$IMAGE_TAG" | tr '[:upper:]' '[:lower:]')
+
+          docker build -t "$IMAGE_NAME" -t "$IMAGE_TAG" .
+          docker push "$IMAGE_NAME"
+          docker push "$IMAGE_TAG"
