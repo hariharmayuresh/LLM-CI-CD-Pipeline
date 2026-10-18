@@ -1,0 +1,10 @@
+[
+    {
+        "input": "explain machine learning in one sentence",
+        "expected_keyword": "data"
+    },
+    {
+        "input": "What is Python?",
+        "expected_keyword": "programming"
+    }
+]

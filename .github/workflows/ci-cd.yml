@@ -1,0 +1,49 @@
+name : LLM application CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs: 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: pytest tests/test_unit.py
+
+      - name: Run integration tests
+        run: pytest tests/test_integration.py
+
+    # Run LLM Evals in CI
+
+      - name: Run LLM evaluations
+        run: python evals/run_evals.py
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+  
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t llm-app:${{ github.sha }} .
