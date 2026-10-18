@@ -33,6 +33,8 @@ jobs:
     # Run LLM Evals in CI
 
       - name: Run LLM evaluations
+        env:
+            PYTHONPATH: .
         run: python evals/run_evals.py
 
   build:
