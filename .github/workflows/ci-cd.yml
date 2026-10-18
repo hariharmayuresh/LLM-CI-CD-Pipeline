@@ -24,6 +24,14 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+        # install and run ollama on git actions ubuntu
+      - name: Install and start Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama serve &
+          sleep 5
+          ollama pull qwen3
+
       - name: Run unit tests
         run: pytest tests/test_unit.py
 
